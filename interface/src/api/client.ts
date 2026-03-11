@@ -1205,6 +1205,8 @@ export interface CreateMessagingInstanceRequest {
 		webhook_port?: number;
 		webhook_bind?: string;
 		webhook_auth_token?: string;
+		mattermost_base_url?: string;
+		mattermost_token?: string;
 	};
 }
 
