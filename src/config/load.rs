@@ -2226,9 +2226,7 @@ impl Config {
                     .ok()
                     .or_else(|| s.account.as_deref().and_then(resolve_env_value));
 
-                if (http_url.is_none() || account.is_none())
-                    && !instances.iter().any(|inst| inst.enabled)
-                {
+                if (http_url.is_none() || account.is_none()) && instances.is_empty() {
                     return None;
                 }
 
