@@ -1434,11 +1434,18 @@ impl Channel {
                 self.resolved_settings.response_mode,
                 ResponseMode::MentionOnly
             ) {
-                let mut history = self.state.history.write().await;
-                for (formatted_text, _, _) in &pending_batch_entries {
-                    history.push(rig::message::Message::User {
-                        content: OneOrMany::one(UserContent::text(formatted_text)),
-                    });
+                {
+                    let mut history = self.state.history.write().await;
+                    for (formatted_text, _, _) in &pending_batch_entries {
+                        history.push(rig::message::Message::User {
+                            content: OneOrMany::one(UserContent::text(formatted_text)),
+                        });
+                    }
+                }
+                // Compaction guard: suppressed messages accumulate in history
+                // without agent turns, so check compaction to prevent unbounded growth.
+                if let Err(error) = self.compactor.check_and_compact().await {
+                    tracing::warn!(channel_id = %self.id, %error, "compaction check failed");
                 }
             }
             // Both Quiet and MentionOnly keep passive memory capture.
@@ -1862,10 +1869,17 @@ impl Channel {
                     self.resolved_settings.response_mode,
                     ResponseMode::MentionOnly
                 ) {
-                    let mut history = self.state.history.write().await;
-                    history.push(rig::message::Message::User {
-                        content: OneOrMany::one(UserContent::text(&user_text)),
-                    });
+                    {
+                        let mut history = self.state.history.write().await;
+                        history.push(rig::message::Message::User {
+                            content: OneOrMany::one(UserContent::text(&user_text)),
+                        });
+                    }
+                    // Compaction guard: suppressed messages accumulate in history
+                    // without agent turns, so check compaction to prevent unbounded growth.
+                    if let Err(error) = self.compactor.check_and_compact().await {
+                        tracing::warn!(channel_id = %self.id, %error, "compaction check failed");
+                    }
                 }
                 // Both Quiet and MentionOnly keep passive memory capture.
                 self.message_count += 1;

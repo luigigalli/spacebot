@@ -104,7 +104,7 @@ const RESPONSE_MODE_DESCRIPTIONS: Record<string, string> = {
 	quiet:
 		"Observes and learns from the conversation, but only responds when @mentioned, replied to, or given a command.",
 	mention_only:
-		"Messages are still visible to the agent for context, but it only responds when explicitly @mentioned or replied to. To block messages entirely, use the binding-level require mention setting instead.",
+		"Messages are still visible to the agent for context, but it only responds when explicitly @mentioned, replied to, or given a command. To block messages entirely, use the binding-level require mention setting instead.",
 };
 
 const WORKER_HISTORY_OPTIONS = [

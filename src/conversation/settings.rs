@@ -119,7 +119,7 @@ pub enum ResponseMode {
     /// Observe and learn (history + memory persistence) but only respond
     /// to @mentions, replies-to-bot, and slash commands.
     Quiet,
-    /// Only respond when explicitly @mentioned or replied to.
+    /// Only respond when explicitly @mentioned, replied to, or given a command.
     /// Messages that don't pass the mention check are still ingested into
     /// the in-memory context window (so the agent stays context-aware),
     /// recorded in conversation history, and contribute to passive memory
