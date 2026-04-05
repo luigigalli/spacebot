@@ -6,7 +6,7 @@ import {useLiveContext} from "@/hooks/useLiveContext";
 import {Markdown} from "@/components/Markdown";
 import {ConversationSettingsPanel} from "@/components/ConversationSettingsPanel";
 import {ConversationsSidebar} from "@/components/ConversationsSidebar";
-import {Button, PopoverRoot, PopoverTrigger, PopoverContent} from "@spacedrive/primitives";
+import {CircleButton, PopoverRoot, PopoverTrigger, PopoverContent} from "@spacedrive/primitives";
 import {api, type ConversationDefaultsResponse, type ConversationSettings} from "@/api/client";
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import {GearSix} from "@phosphor-icons/react";
@@ -347,9 +347,7 @@ export function WebChatPanel({agentId}: WebChatPanelProps) {
 					</div>
 					<PopoverRoot open={showSettings} onOpenChange={setShowSettings}>
 						<PopoverTrigger asChild>
-							<Button variant="ghost" size="icon" className="h-7 w-7">
-								<GearSix className="h-3.5 w-3.5" />
-							</Button>
+							<CircleButton icon={GearSix} size="sm" />
 						</PopoverTrigger>
 						<PopoverContent align="end" sideOffset={4} collisionPadding={16} className="max-h-[80vh] w-96 overflow-y-auto p-3">
 							{defaultsLoading ? (

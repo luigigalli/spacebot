@@ -71,7 +71,7 @@ function SortableAgentItem({ agentId, displayName, gradientStart, gradientEnd, i
 	const name = displayName ?? agentId;
 
 	return (
-		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+		<div ref={setNodeRef} style={style}>
 			<Link
 				to="/agents/$agentId"
 				params={{ agentId }}
@@ -86,6 +86,8 @@ function SortableAgentItem({ agentId, displayName, gradientStart, gradientEnd, i
 							: "text-sidebar-inkDull hover:bg-sidebar-selected/20 hover:text-sidebar-ink"
 				}`}
 				style={{ pointerEvents: isDragging ? 'none' : 'auto' }}
+				{...attributes}
+				{...listeners}
 			>
 				<ProfileAvatar
 					seed={agentId}

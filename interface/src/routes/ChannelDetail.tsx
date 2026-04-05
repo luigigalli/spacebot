@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
 import { api, type ChannelInfo, type TimelineItem, type TimelineBranchRun, type TimelineWorkerRun } from "@/api/client";
 import { isOpenCodeWorker, type ChannelLiveState, type ActiveWorker, type ActiveBranch } from "@/hooks/useChannelLiveState";
-import { CortexChatPanel } from "@/components/CortexChatPanel";
 import { LiveDuration } from "@/components/LiveDuration";
 import { Markdown } from "@/components/Markdown";
 import { PromptInspectModal } from "@/components/PromptInspectModal";
 import { formatTimestamp, platformIcon, platformColor } from "@/lib/format";
 import { Button } from "@spacedrive/primitives";
-import { X, Lightbulb, Code } from "@phosphor-icons/react";
+import { X, Code } from "@phosphor-icons/react";
 
 interface ChannelDetailProps {
 	agentId: string;
@@ -291,7 +289,6 @@ export function ChannelDetail({ agentId, channelId, channel, liveState, onLoadMo
 	const activeWorkerCount = Object.keys(workers).length;
 	const activeBranchCount = Object.keys(branches).length;
 	const hasActivity = activeWorkerCount > 0 || activeBranchCount > 0;
-	const [cortexOpen, setCortexOpen] = useState(true);
 	const [inspectOpen, setInspectOpen] = useState(false);
 
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -351,7 +348,7 @@ export function ChannelDetail({ agentId, channelId, channel, liveState, onLoadMo
 						</span>
 					)}
 
-					{/* Right side: activity indicators + typing + cortex toggle */}
+					{/* Right side: activity indicators + typing + inspect */}
 					<div className="ml-auto flex items-center gap-3">
 						{hasActivity && (
 							<div className="flex items-center gap-2">
@@ -381,26 +378,15 @@ export function ChannelDetail({ agentId, channelId, channel, liveState, onLoadMo
 								<span className="ml-1 text-tiny text-ink-faint">typing</span>
 							</div>
 						)}
-						<div className="flex overflow-hidden rounded-md border border-app-line bg-app-darkBox">
-							<Button
-								aria-label="Inspect prompt"
-								onClick={() => setInspectOpen(true)}
-								variant="ghost"
-								size="icon"
-								title="Inspect prompt"
-							>
-								<Code className="h-4 w-4" />
-							</Button>
-							<Button
-								onClick={() => setCortexOpen(!cortexOpen)}
-								variant={cortexOpen ? "secondary" : "ghost"}
-								size="icon"
-								className={cortexOpen ? "bg-app-selected text-ink" : ""}
-								title="Toggle cortex chat"
-							>
-								<Lightbulb className="h-4 w-4" />
-							</Button>
-						</div>
+						<Button
+							aria-label="Inspect prompt"
+							onClick={() => setInspectOpen(true)}
+							variant="ghost"
+							size="icon"
+							title="Inspect prompt"
+						>
+							<Code className="h-4 w-4" />
+						</Button>
 					</div>
 				</div>
 
@@ -451,27 +437,6 @@ export function ChannelDetail({ agentId, channelId, channel, liveState, onLoadMo
 			</div>
 
 			<PromptInspectModal open={inspectOpen} onOpenChange={setInspectOpen} channelId={channelId} />
-
-			{/* Cortex chat panel */}
-			<AnimatePresence>
-				{cortexOpen && (
-					<motion.div
-						initial={{ width: 0, opacity: 0 }}
-						animate={{ width: 400, opacity: 1 }}
-						exit={{ width: 0, opacity: 0 }}
-						transition={{ type: "spring", stiffness: 400, damping: 30 }}
-						className="flex-shrink-0 overflow-hidden border-l border-app-line/50"
-					>
-						<div className="h-full w-[400px]">
-							<CortexChatPanel
-								agentId={agentId}
-								channelId={channelId}
-								onClose={() => setCortexOpen(false)}
-							/>
-						</div>
-					</motion.div>
-				)}
-			</AnimatePresence>
 		</div>
 	);
 }
