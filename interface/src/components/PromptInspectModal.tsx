@@ -83,7 +83,7 @@ export function PromptInspectModal({
 
 	return (
 		<DialogRoot open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="!flex h-[85vh] w-[80vw] max-w-[80vw] !flex-col !gap-0 overflow-hidden !p-0">
+			<DialogContent className="!flex h-[85vh] w-[80vw] !max-w-[80vw] !flex-col !gap-0 overflow-hidden !p-0">
 				<DialogHeader className="flex-shrink-0 border-b border-app-line/50 px-6 pt-6 pb-4">
 					<DialogTitle>Prompt Inspector</DialogTitle>
 					{showContent && !contentLoading && systemPrompt != null && (

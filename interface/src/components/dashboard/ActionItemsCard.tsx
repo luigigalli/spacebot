@@ -1,3 +1,4 @@
+import {useState} from "react";
 import {
 	CheckCircle,
 	WarningCircle,
@@ -12,7 +13,8 @@ import {
 	Button,
 } from "@spacedrive/primitives";
 import {useNotifications} from "@/hooks/useNotifications";
-import type {NotificationKind} from "@/api/client";
+import type {NotificationItem, NotificationKind} from "@/api/client";
+import {ApprovalModal} from "@/components/ApprovalModal";
 
 const TYPE_CONFIG: Record<
 	NotificationKind,
@@ -58,7 +60,8 @@ function timeAgo(isoString: string): string {
 }
 
 export function ActionItemsCard() {
-	const {notifications, dismiss} = useNotifications("unread");
+	const {notifications} = useNotifications("unread");
+	const [activeNotification, setActiveNotification] = useState<NotificationItem | null>(null);
 
 	return (
 		<Card variant="dark" className="flex h-full flex-col">
@@ -119,12 +122,7 @@ export function ActionItemsCard() {
 									size="xs"
 									variant="subtle"
 									className="shrink-0"
-									onClick={() => {
-										if (item.action_url) {
-											window.location.href = item.action_url;
-										}
-										dismiss(item.id);
-									}}
+									onClick={() => setActiveNotification(item)}
 								>
 									{config.action}
 									<ArrowRight className="ml-1 h-3 w-3" />
@@ -134,6 +132,11 @@ export function ActionItemsCard() {
 					})
 				)}
 			</CardContent>
+
+			<ApprovalModal
+				notification={activeNotification}
+				onClose={() => setActiveNotification(null)}
+			/>
 		</Card>
 	);
 }
