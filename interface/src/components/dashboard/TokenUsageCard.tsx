@@ -21,9 +21,9 @@ const MODEL_COLORS: Record<string, string> = {
 	"claude-haiku": "#8b5cf6",
 	"gpt-4o": "#3b82f6",
 	"gpt-4o-mini": "#06b6d4",
-	"o3": "#10b981",
-	"gemini": "#f97316",
-	"deepseek": "#64748b",
+	o3: "#10b981",
+	gemini: "#f97316",
+	deepseek: "#64748b",
 };
 
 function colorForModel(model: string): string {
@@ -52,8 +52,7 @@ export function TokenUsageCard() {
 
 	const {data, isLoading} = useQuery({
 		queryKey: ["usage", period],
-		queryFn: () =>
-			api.usage({since: sinceDate(period), group_by: "model"}),
+		queryFn: () => api.usage({since: sinceDate(period), group_by: "model"}),
 		staleTime: 60_000,
 	});
 
@@ -86,7 +85,7 @@ export function TokenUsageCard() {
 				</div>
 			</CardHeader>
 
-			<CardContent className="flex flex-1 flex-col px-4 pb-4 pt-0">
+			<CardContent className="flex flex-1 flex-col px-6 pb-4 pt-0">
 				{isLoading || !total ? (
 					<div className="flex flex-1 items-center justify-center">
 						<span className="text-sm text-ink-faint">Loading...</span>
@@ -137,11 +136,7 @@ export function TokenUsageCard() {
 						{models.length > 0 && (
 							<div className="mt-auto flex flex-col gap-2.5">
 								{models.map((m) => (
-									<ModelBar
-										key={m.model}
-										model={m}
-										totalTokens={totalTokens}
-									/>
+									<ModelBar key={m.model} model={m} totalTokens={totalTokens} />
 								))}
 							</div>
 						)}
@@ -149,8 +144,8 @@ export function TokenUsageCard() {
 						{/* Unknown pricing note */}
 						{total.cost_status === "unknown" && (
 							<p className="mt-2 text-tiny text-ink-faint">
-								Some usage has unknown pricing and is excluded from the
-								cost total.
+								Some usage has unknown pricing and is excluded from the cost
+								total.
 							</p>
 						)}
 					</>

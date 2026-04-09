@@ -1,9 +1,14 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { CheckSquare, Brain, Robot, Circle } from "@phosphor-icons/react";
-import { Card, CardHeader, CardContent, FilterButton } from "@spacedrive/primitives";
-import { api, type TaskItem, type CortexEvent } from "@/api/client";
-import type { WorkerListItem } from "@/api/types";
+import {useState} from "react";
+import {useQuery} from "@tanstack/react-query";
+import {CheckSquare, Brain, Robot, Circle} from "@phosphor-icons/react";
+import {
+	Card,
+	CardHeader,
+	CardContent,
+	FilterButton,
+} from "@spacedrive/primitives";
+import {api, type TaskItem, type CortexEvent} from "@/api/client";
+import type {WorkerListItem} from "@/api/types";
 
 type FilterType = "all" | "tasks" | "cortex" | "workers";
 
@@ -17,25 +22,25 @@ interface ActivityItem {
 
 const TYPE_CONFIG: Record<
 	ActivityItem["type"],
-	{ icon: React.ElementType; iconClass: string }
+	{icon: React.ElementType; iconClass: string}
 > = {
-	task_created: { icon: Circle, iconClass: "text-blue-400" },
-	task_completed: { icon: CheckSquare, iconClass: "text-status-success" },
-	cortex: { icon: Brain, iconClass: "text-violet-400" },
-	worker_done: { icon: Robot, iconClass: "text-amber-400" },
+	task_created: {icon: Circle, iconClass: "text-blue-400"},
+	task_completed: {icon: CheckSquare, iconClass: "text-status-success"},
+	cortex: {icon: Brain, iconClass: "text-violet-400"},
+	worker_done: {icon: Robot, iconClass: "text-amber-400"},
 };
 
-const FILTERS: { key: FilterType; label: string }[] = [
-	{ key: "all", label: "All" },
-	{ key: "tasks", label: "Tasks" },
-	{ key: "cortex", label: "Cortex" },
-	{ key: "workers", label: "Workers" },
+const FILTERS: {key: FilterType; label: string}[] = [
+	{key: "all", label: "All"},
+	{key: "tasks", label: "Tasks"},
+	{key: "cortex", label: "Cortex"},
+	{key: "workers", label: "Workers"},
 ];
 
 export function RecentActivityCard() {
 	const [filter, setFilter] = useState<FilterType>("all");
 
-	const { data: agentsData } = useQuery({
+	const {data: agentsData} = useQuery({
 		queryKey: ["agents"],
 		queryFn: () => api.agents(),
 		staleTime: 60_000,
@@ -43,19 +48,19 @@ export function RecentActivityCard() {
 
 	const agentIds = (agentsData?.agents ?? []).map((a) => a.id);
 
-	const { data: tasksData } = useQuery({
+	const {data: tasksData} = useQuery({
 		queryKey: ["tasks"],
-		queryFn: () => api.listTasks({ limit: 20 }),
+		queryFn: () => api.listTasks({limit: 20}),
 		staleTime: 30_000,
 	});
 
-	const { data: workersData } = useQuery({
+	const {data: workersData} = useQuery({
 		queryKey: ["dashboard-workers", agentIds],
 		queryFn: async () => {
 			const results = await Promise.all(
 				agentIds.map(async (id) => {
-					const r = await api.workersList(id, { limit: 10 }).catch(() => null);
-					return (r?.workers ?? []).map((w) => ({ ...w, _agent_id: id }));
+					const r = await api.workersList(id, {limit: 10}).catch(() => null);
+					return (r?.workers ?? []).map((w) => ({...w, _agent_id: id}));
 				}),
 			);
 			return results.flat();
@@ -64,13 +69,13 @@ export function RecentActivityCard() {
 		staleTime: 30_000,
 	});
 
-	const { data: cortexData } = useQuery({
+	const {data: cortexData} = useQuery({
 		queryKey: ["dashboard-cortex", agentIds],
 		queryFn: async () => {
 			const results = await Promise.all(
 				agentIds.map(async (id) => {
-					const r = await api.cortexEvents(id, { limit: 10 }).catch(() => null);
-					return (r?.events ?? []).map((e) => ({ ...e, _agent_id: id }));
+					const r = await api.cortexEvents(id, {limit: 10}).catch(() => null);
+					return (r?.events ?? []).map((e) => ({...e, _agent_id: id}));
 				}),
 			);
 			return results.flat();
@@ -83,7 +88,10 @@ export function RecentActivityCard() {
 		.slice(0, 10)
 		.map((t) => ({
 			id: `t-${t.id}`,
-			type: t.status === "done" ? ("task_completed" as const) : ("task_created" as const),
+			type:
+				t.status === "done"
+					? ("task_completed" as const)
+					: ("task_created" as const),
 			title: t.title,
 			agent: t.owner_agent_id,
 			timestamp: new Date(t.created_at).getTime(),
@@ -125,9 +133,11 @@ export function RecentActivityCard() {
 	return (
 		<Card variant="dark">
 			<CardHeader className="flex-row items-center justify-between p-4 pb-3">
-				<h2 className="font-plex text-sm font-medium text-ink-dull">Recent Activity</h2>
+				<h2 className="font-plex text-sm font-medium text-ink-dull">
+					Recent Activity
+				</h2>
 				<div className="flex items-center gap-1">
-					{FILTERS.map(({ key, label }) => (
+					{FILTERS.map(({key, label}) => (
 						<FilterButton
 							key={key}
 							label={label}
@@ -138,7 +148,7 @@ export function RecentActivityCard() {
 				</div>
 			</CardHeader>
 
-			<CardContent className="px-4 pb-4 pt-0">
+			<CardContent className="px-6 pb-4 pt-0">
 				{filtered.length === 0 ? (
 					<div className="py-6 text-center">
 						<p className="text-sm text-ink-faint">No activity yet</p>
@@ -146,7 +156,7 @@ export function RecentActivityCard() {
 				) : (
 					<div className="flex flex-col divide-y divide-app-line/40">
 						{filtered.map((item) => {
-							const { icon: Icon, iconClass } = TYPE_CONFIG[item.type];
+							const {icon: Icon, iconClass} = TYPE_CONFIG[item.type];
 							return (
 								<div
 									key={item.id}
@@ -154,7 +164,9 @@ export function RecentActivityCard() {
 								>
 									<Icon className={`h-4 w-4 shrink-0 ${iconClass}`} />
 									<div className="min-w-0 flex-1">
-										<p className="truncate text-sm text-ink-dull">{item.title}</p>
+										<p className="truncate text-sm text-ink-dull">
+											{item.title}
+										</p>
 										{item.agent && (
 											<p className="text-tiny text-ink-faint">{item.agent}</p>
 										)}
