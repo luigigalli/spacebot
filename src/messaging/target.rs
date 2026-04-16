@@ -185,6 +185,12 @@ pub fn resolve_broadcast_target(channel: &ChannelInfo) -> Option<BroadcastTarget
             let target = normalize_mattermost_target(&raw_target)?;
             return Some(BroadcastTarget { adapter, target });
         }
+        "link" => {
+            return Some(BroadcastTarget {
+                adapter: "link".to_string(),
+                target: channel.id.clone(),
+            });
+        }
         _ => return None,
     };
 

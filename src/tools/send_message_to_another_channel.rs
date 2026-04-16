@@ -334,11 +334,19 @@ impl Tool for SendMessageTool {
 
         let broadcast_target = crate::messaging::target::resolve_broadcast_target(&channel)
             .ok_or_else(|| {
-                SendMessageError(format!(
-                    "could not resolve platform target for channel '{}' (platform: {})",
-                    channel.display_name.as_deref().unwrap_or(&channel.id),
-                    channel.platform,
-                ))
+                let platform = &channel.platform;
+                if platform == "link" {
+                    SendMessageError(format!(
+                        "link channels are internal and cannot be used as targets for send_message_to_another_channel. \
+                         Use send_agent_message to communicate with linked agents instead."
+                    ))
+                } else {
+                    SendMessageError(format!(
+                        "could not resolve platform target for channel '{}' (platform: {})",
+                        channel.display_name.as_deref().unwrap_or(&channel.id),
+                        platform,
+                    ))
+                }
             })?;
 
         self.messaging_manager
