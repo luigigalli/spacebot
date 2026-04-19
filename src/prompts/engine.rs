@@ -852,5 +852,17 @@ mod tests {
         assert!(prompt.contains("Bulletin fallback"));
         assert!(!prompt.contains("## Knowledge Context"));
     }
+
+    #[test]
+    fn knowledge_synthesis_prompt_preserves_participant_roles() {
+        let engine = PromptEngine::new("en").expect("prompt engine should build");
+        let prompt = engine
+            .render_static("cortex_knowledge_synthesis")
+            .expect("knowledge synthesis prompt should render");
+
+        assert!(prompt.contains("Stable participant or user role facts"));
+        assert!(prompt.contains("the user is the CEO"));
+        assert!(!prompt.contains("\"The user is the CEO\" or similar role statements"));
+    }
 }
 // to support multiple languages at compile time.

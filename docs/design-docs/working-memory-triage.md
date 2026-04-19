@@ -14,8 +14,8 @@ Findings from CodeRabbit review + bug reports. Tracking resolution before merge.
 - [x] **R2 — Bulletin fallback gate too aggressive** (`prompts/en/channel.md.j2:172`)
   Condition `not working_memory and not knowledge_synthesis` hides bulletin when working memory exists but knowledge synthesis hasn't run yet. **Fixed in PR #570:** fallback now depends on missing `knowledge_synthesis`, and prompt data preserves that original absence.
 
-- [ ] **R3 — Don't exclude participant-role facts yet** (`prompts/en/cortex_knowledge_synthesis.md.j2:21`)
-  Exclusion of "The user is the CEO" drops participant context with nowhere else to live until Phase 6 ships.
+- [x] **R3 — Don't exclude participant-role facts yet** (`prompts/en/cortex_knowledge_synthesis.md.j2:21`)
+  Exclusion of "The user is the CEO" drops participant context with nowhere else to live until Phase 6 ships. **Fixed in this slice:** knowledge synthesis now preserves concise participant/user role facts when they affect future routing, authority, relationships, or interpretation.
 
 - [ ] **R4 — Raw worker task in working memory** (`src/agent/channel_dispatch.rs:596`)
   `task` from user input persisted verbatim; could capture secrets/PII. Truncate and scrub.
