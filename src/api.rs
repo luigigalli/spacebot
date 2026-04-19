@@ -14,6 +14,7 @@ mod cortex;
 mod cron;
 mod factory;
 mod ingest;
+mod link_channels;
 mod links;
 mod mcp;
 mod memories;

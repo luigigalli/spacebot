@@ -3,8 +3,9 @@
 use super::state::ApiState;
 use super::{
     activity, agents, attachments, bindings, channels, config, cortex, cron, factory, ingest,
-    links, mcp, memories, messaging, models, notifications, opencode_proxy, portal, projects,
-    providers, secrets, settings, skills, ssh, system, tasks, tools, usage, wiki, workers,
+    link_channels, links, mcp, memories, messaging, models, notifications, opencode_proxy, portal,
+    projects, providers, secrets, settings, skills, ssh, system, tasks, tools, usage, wiki,
+    workers,
 };
 
 use axum::Json;
@@ -256,6 +257,15 @@ pub fn api_router() -> OpenApiRouter<Arc<ApiState>> {
         .routes(routes!(links::update_group, links::delete_group))
         .routes(routes!(links::list_humans, links::create_human))
         .routes(routes!(links::update_human, links::delete_human))
+        // Link channel routes
+        .routes(routes!(link_channels::list_link_channel_messages))
+        .routes(routes!(link_channels::list_link_channels))
+        .routes(routes!(link_channels::send_link_channel_message))
+        .routes(routes!(link_channels::acknowledge_link_message))
+        .routes(routes!(link_channels::get_link_message_status))
+        .routes(routes!(link_channels::search_link_channel_messages))
+        .routes(routes!(link_channels::link_channel_retention_info))
+        .routes(routes!(link_channels::link_channel_events_sse))
         // Usage routes
         .routes(routes!(usage::get_usage))
         .routes(routes!(usage::get_conversation_usage))
